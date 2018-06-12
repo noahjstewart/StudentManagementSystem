@@ -38,19 +38,19 @@ void update_container(Student& s, vector<Student>& v)
 }
 
 /**
-* void add_course(Student& s, vector<Student>& v)
-* adds a course to a Student using s.add_class(Course) method
-* param s: Student to add a course to
-* param v: container of Students
-*/
+  * void add_course(Student& s, vector<Student>& v)
+  * adds a course to a Student using s.add_class(Course) method
+  * param s: Student to add a course to
+  * param v: container of Students
+  */
 void add_course(Student& s, vector<Student>& v)
 {
 	Course c;
 	cout << "\n\tENTER SUBJECT: ";
 	cin >> c.subject;
 	// convert subject to uppercase
-	for (auto &c : c.subject)
-		c = toupper(c);
+	for (auto &ch : c.subject)
+		ch = toupper(ch);
 	cout << "\n\tENTER COURSE NUMBER: ";
 	cin >> c.course_number;
 	cout << "\n\tENTER SECTION: ";
@@ -62,6 +62,47 @@ void add_course(Student& s, vector<Student>& v)
 
 	s.add_class(c);
 	update_container(s, v);			// update student entry in container
+}
+
+/**
+  * void remove_course(Student& s, vector<Student>& v, vector<Course> exist_c)
+  * removes a course from a Student using s.remove_class(Course) method
+  * param s: Student to add a course to
+  * param v: container of Students
+  * param exist_c: container of current courses Student s is enrolled in
+  */
+void remove_course(Student& s, vector<Student>& v, vector<Course> exist_c)
+{
+	string rem_subj;
+	int rem_num;
+
+	cout << "\n\tENTER SUBJECT: ";
+	cin >> rem_subj;
+	// convert subject to uppercase
+	for (auto &ch : rem_subj)
+		ch = toupper(ch);
+
+	cout << "\n\tENTER COURSE NUMBER: ";
+	cin >> rem_num;
+
+	Course rem_course;
+	auto c = exist_c.begin();
+	for (; c != exist_c.end(); ++c)
+	{
+		if (rem_subj == c->subject && rem_num == c->course_number)
+		{
+			rem_course = *c;
+			break;
+		}
+	}
+
+	if (c == exist_c.end())
+		cout << "\n\tSTUDENT NOT ENROLLED IN COURSE\n";
+	else
+	{
+		s.remove_class(rem_course);
+		update_container(s, v);			// update student entry in container
+	}
 }
 
 /**
@@ -94,19 +135,6 @@ void add_student(vector<Student>& v)
 			add_course(s, v);
 
 	} while (tolower(ch) != 'n');
-}
-
-/**
-* void change_id(Student& s)
-* changes id of a current student
-*/
-void change_id(Student& s)
-{
-	int new_id;
-	cout << "\n\tENTER NEW ID: ";
-	cin >> new_id;
-
-	s.set_id(new_id);
 }
 
 /**
@@ -165,7 +193,7 @@ void edit_student(vector<Student>& v)
 					cout << "\n\n\tSELECT WHAT YOU WISH TO EDIT ABOUT " << s->get_name() << " (0 TO RETURN)";
 					cout << "\n\t1) NAME";
 					cout << "\n\t2) CLASSES";
-					cout << "\n\t(1-2): ";
+					cout << "\n\t   (1-2): ";
 					cin >> ch;
 
 					switch (ch)
@@ -176,20 +204,41 @@ void edit_student(vector<Student>& v)
 
 					case '2':
 					{
-						// display current courses
-						vector<Course> existing_courses = s->get_classes();
-						cout << "  ----------------------------------------\n";
-						cout << "\n\tCURRENT COURSES:\n";
-						if (existing_courses.empty())
-							cout << "NONE\n";
-						else
-							for (auto c : existing_courses)
-								cout << "\n" << c << endl;
-
 						// TODO: options for adding, removing, or editing courses (switch statement)
+						char edit_ch;
+						do
+						{
+							// display current courses
+							vector<Course> existing_courses = s->get_classes();
+							cout << "  ----------------------------------------\n";
+							cout << "\n\tCURRENT COURSES:\n";
+							if (existing_courses.empty())
+								cout << "NONE\n";
+							else
+								for (auto c : existing_courses)
+									cout << "\n" << c << endl;
 
-						cout << "\n\t";
+							cout << "\n\t1) ADD A COURSE";
+							cout << "\n\t2) REMOVE A COURSE";
+							cout << "\n\t3) EDIT A COURSE";
+							cout << "\n\t   (1-3 OR 0 TO RETURN): ";
+							cin >> edit_ch;
 
+							switch (edit_ch)
+							{
+							case '1':
+								add_course(*s, v);
+								break;
+
+							case '2':
+								remove_course(*s, v, existing_courses);
+								break;
+
+							case '3':
+								break;
+
+							}
+						} while (edit_ch != '0');
 
 						//	string course_subj;
 						//	int course_num;
@@ -259,6 +308,6 @@ void edit_student(vector<Student>& v)
 
 		  // id doesn't exist
 		if (s == v.end())
-			cout << "\n\tID DOESN'T EXIST";
+			cout << "\n\tID DOESN'T EXIST\n";
 	} while (id != 0);
 }
