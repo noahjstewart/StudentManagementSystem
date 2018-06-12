@@ -43,6 +43,7 @@ public:
 	void set_id(int);
 
 	// methods
+	void remove_class(Course);
 	void add_class(Course);
 	float calculate_gpa(vector<Course>);
 
