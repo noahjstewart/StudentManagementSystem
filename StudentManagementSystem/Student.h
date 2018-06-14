@@ -43,9 +43,10 @@ public:
 	void set_id(int);
 
 	// methods
+	void edit_class_grade(Course);
 	void remove_class(Course);
 	void add_class(Course);
-	float calculate_gpa(vector<Course>);
+	float calculate_gpa();
 
 	// << operator
 	friend ostream& operator<<(ostream&, const Student&);

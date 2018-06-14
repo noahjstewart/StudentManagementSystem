@@ -132,7 +132,26 @@ void Student::add_class(Course c)
 {
 	classes.push_back(c);
 	total_credits += c.credits;
-	gpa = this->calculate_gpa(classes);
+	gpa = this->calculate_gpa();
+}
+
+/**
+* void Student::edit_class_grade(Course c)
+* edits a Course in a Student's classes vector
+* recalculates Student's GPA
+* param c: Course to be added
+*/
+void Student::edit_class_grade(Course c)
+{
+	for (auto i = 0; i < classes.size(); ++i)
+	{
+		if (c.subject == classes[i].subject && c.course_number == classes[i].course_number)
+		{
+			classes[i].grade = c.grade;
+			break;
+		}
+	}
+	gpa = this->calculate_gpa();
 }
 
 /**
@@ -151,7 +170,7 @@ void Student::remove_class(Course c)
 			break;
 		}
 	total_credits -= c.credits;
-	gpa = this->calculate_gpa(classes);
+	gpa = this->calculate_gpa();
 }
 
 /**
@@ -159,13 +178,13 @@ void Student::remove_class(Course c)
 * calculates a Student's GPA
 * param v: vector of Courses
 */
-float Student::calculate_gpa(vector<Course> v)
+float Student::calculate_gpa()
 {
 	if (total_credits == 0)
 		return 0.0;
 
 	float sum = 0.0;
-	for (Course c : v)
+	for (Course c : this->classes)
 		sum += c.grade * c.credits;
 
 	return sum / total_credits;

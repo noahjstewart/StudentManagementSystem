@@ -62,6 +62,7 @@ void add_course(Student& s, vector<Student>& v)
 
 	s.add_class(c);
 	update_container(s, v);			// update student entry in container
+	cout << "\n\n\tCOURSE ADDED\n";
 }
 
 /**
@@ -102,6 +103,55 @@ void remove_course(Student& s, vector<Student>& v, vector<Course> exist_c)
 	{
 		s.remove_class(rem_course);
 		update_container(s, v);			// update student entry in container
+		cout << "\n\n\tCOURSE REMOVED\n";
+	}
+}
+
+/**
+* void edit_course_grade(Student& s, vector<Student>& v, vector<Course> exist_c)
+* edits a current Course grade that Student s is enrolled in
+* param s: Student to add a course to
+* param v: container of Students
+* param exist_c: container of current courses Student s is enrolled in
+* param subj: string subject of the course to edit
+* param c_num: int course number
+*/
+void edit_course_grade(Student& s, vector<Student>& v, vector<Course>& exist_c)
+{
+	string course_subj;
+	int course_num;
+
+	cout << "\n\tSELECT WHICH CLASS GRADE TO EDIT";
+	cout << "\n\n\tSUBJECT: ";
+	cin >> course_subj;
+	for (auto& z : course_subj)
+		z = toupper(z);
+	cout << "\n\tCOURSE NUMBER: ";
+	cin >> course_num;
+
+	Course c_to_edit;
+	auto c = exist_c.begin();
+	for (; c != exist_c.end(); ++c)
+	{
+		if (course_subj == c->subject && course_num == c->course_number)
+		{
+			float new_grade;
+			cout << "\n\tENTER NEW GRADE: ";
+			cin >> new_grade;
+
+			c_to_edit = *c;
+			c_to_edit.grade = new_grade;
+
+			break;
+		}
+	}
+	if (c == exist_c.end())
+		cout << "\n\tSTUDENT NOT ENROLLED IN COURSE\n";
+	else
+	{
+		s.edit_class_grade(c_to_edit);
+		cout << "\n\n\tGRADE CHANGED\n";
+		//update_container(s, v);
 	}
 }
 
@@ -135,6 +185,44 @@ void add_student(vector<Student>& v)
 			add_course(s, v);
 
 	} while (tolower(ch) != 'n');
+	cout << "\n\n\tSTUDENT ADDED\n";
+}
+
+/**
+* void remove_student(vector<Student> v)
+* removes a student record from the container of Students
+* param v: container of Students
+*/
+void remove_student(vector<Student>& v)
+{
+	int rem_id;
+	cout << "\n\tENTER ID OF STUDENT TO REMOVE: ";
+	cin >> rem_id;
+
+	if (rem_id > v.size() || rem_id <= 0)
+		cout << "\n\tINVALID ID\n";
+	else
+	{
+		bool removed = false;
+		for (auto i = 0; i < v.size(); ++i)
+		{
+			// update id's
+			if (removed) 
+			{
+				v[i].set_id( v[i].get_id() - 1 );
+			} // end removed if
+			else
+			{
+				if (rem_id == v[i].get_id())
+				{
+					v.erase( v.begin() + i );
+					removed = true;
+					--i;
+				} // end check id if
+			} // end inner else
+		} // end for
+		cout << "\n\tSTUDENT REMOVED AND IDS UPDATED\n";
+	} // end outer else
 }
 
 /**
@@ -149,23 +237,9 @@ void change_name(Student& s)
 	getline(cin, name);
 
 	s.set_name(name);
+	cout << "\n\n\tNAME CHANGED";
 }
 
-/**
-* void change_course_subj(Course& c)
-* changes subject of a current student
-*/
-void change_course_subj(Course& c)
-{
-	string subj;
-	cout << "\n\tENTER NEW SUBJECT: ";
-	cin.get();
-	getline(cin, subj);
-	for (auto& m : subj)
-		m = toupper(m);
-
-	c.subject = subj;
-}
 
 /**
 * void edit_student(vector<Student> v)
@@ -204,7 +278,6 @@ void edit_student(vector<Student>& v)
 
 					case '2':
 					{
-						// TODO: options for adding, removing, or editing courses (switch statement)
 						char edit_ch;
 						do
 						{
@@ -220,7 +293,7 @@ void edit_student(vector<Student>& v)
 
 							cout << "\n\t1) ADD A COURSE";
 							cout << "\n\t2) REMOVE A COURSE";
-							cout << "\n\t3) EDIT A COURSE";
+							cout << "\n\t3) EDIT A GRADE";
 							cout << "\n\t   (1-3 OR 0 TO RETURN): ";
 							cin >> edit_ch;
 
@@ -235,71 +308,13 @@ void edit_student(vector<Student>& v)
 								break;
 
 							case '3':
+								edit_course_grade(*s, v, existing_courses);
 								break;
+							} // end switch (edit_ch)
 
-							}
 						} while (edit_ch != '0');
-
-						//	string course_subj;
-						//	int course_num;
-						//	cout << "\n\tSELECT WHICH CLASS TO EDIT";
-						//	cout << "\n\n\tSUBJECT: ";
-						//	cin >> course_subj;
-						//	for (auto& z : course_subj)
-						//		z = toupper(z);
-						//	cout << "\n\tCOURSE NUMBER: ";
-						//	cin >> course_num;
-
-						//	auto clss = existing_courses.begin();
-						//	for (; clss != existing_courses.end(); ++clss)
-						//	{
-						//		if (clss->course_number == course_num && clss->subject == course_subj)
-						//		{
-
-						//			char sel_ch = '0';
-						//			do
-						//			{
-						//				cout << "\n\tSELECT WHAT TO EDIT (0 TO RETURN)";
-						//				cout << "\n\t1) SUBJECT";
-						//				cout << "\n\t2) COURSE NUMBER";
-						//				cout << "\n\t3) SECTION";
-						//				cout << "\n\t4) CREDITS";
-						//				cout << "\n\t5) GRADE";
-						//				cout << "\n\t(1-5): ";
-						//				cin >> sel_ch;
-
-						//				switch (sel_ch)
-						//				{
-						//				case '1':
-						//				{
-						//					change_course_subj(*clss);
-						//					break;
-						//				}
-						//				case '2':
-						//				{
-						//					break;
-						//				}
-						//				case '3':
-						//				{
-						//					break;
-						//				}
-						//				case '4':
-						//				{
-						//					break;
-						//				}
-						//				case '5':
-						//					break;
-						//				}
-
-						//			} while (sel_ch != '0');
-						//			break;
-						//		} // end if
-						//	} // end for
-						//	if (clss == existing_courses.end())
-						//		cout << "\n\tSTUDENT NOT ENROLLED IN COURSE";
-						//	break;
-					} // end case '3'
-					} // end switch
+					}
+					}
 				} while (ch != '0');
 
 				break;
