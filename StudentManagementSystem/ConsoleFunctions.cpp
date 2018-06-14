@@ -4,6 +4,8 @@
 using std::cin; using std::cout; using std::endl;
 #include <string>
 using std::getline; using std::string;
+#include <iomanip>
+using std::setprecision; using std::setw;
 
 #include "Student.h"
 #include "ConsoleFunctions.h"
@@ -22,6 +24,37 @@ void display_menu()
 	cout << "\n\t5) DISPLAY ALL STUDENTS";
 	cout << "\n\t6) EXIT";
 	cout << "\n\n\tSELECT AN OPTION (1-6): ";
+}
+
+/**
+* void display_all(vector<Student> v)
+* displays all students in the container v
+* sorted by id, shows name, total credits and gpa nicely formatted
+* param v: container of Students
+*/
+void display_all(vector<Student> v)
+{
+	
+	if (v.empty())
+		cout << "\nNO STUDENTS EXIST\n";
+	else
+	{
+		cout << std::left;
+		cout << "\n" << setw(3) << "ID"
+			<< setw(30) << "NAME"
+			<< setw(10) << "CREDITS"
+			<< setw(4) << "GPA" << "\n";
+		cout << "\n===============================================\n";
+
+		cout << std::fixed << setprecision(2);
+		for (Student s : v)
+		{
+			cout << setw(3) << s.get_id() 
+				<< setw(30) << s.get_name() 
+				<< setw(10) << s.get_credits()
+				<< setw(4) << s.get_gpa() << "\n";
+		} // end for
+	} // end else
 }
 
 /**
@@ -60,9 +93,14 @@ void add_course(Student& s, vector<Student>& v)
 	cout << "\n\tENTER GRADE: ";
 	cin >> c.grade;
 
-	s.add_class(c);
-	update_container(s, v);			// update student entry in container
-	cout << "\n\n\tCOURSE ADDED\n";
+	if (c.credits + s.get_credits() > 18)
+		cout << "\n\tSTUDENT CANNOT EXCEED 18 CREDITS";
+	else
+	{
+		s.add_class(c);
+		update_container(s, v);			// update student entry in container
+		cout << "\n\n\tCOURSE ADDED\n";
+	} // end else
 }
 
 /**
@@ -141,7 +179,6 @@ void edit_course_grade(Student& s, vector<Student>& v, vector<Course>& exist_c)
 
 			c_to_edit = *c;
 			c_to_edit.grade = new_grade;
-
 			break;
 		}
 	}
@@ -223,6 +260,35 @@ void remove_student(vector<Student>& v)
 		} // end for
 		cout << "\n\tSTUDENT REMOVED AND IDS UPDATED\n";
 	} // end outer else
+}
+
+/**
+* void search_student(vector<Student> v)
+* searches for a Student in the container based off of user input of ID
+* param v: param v: container of Students
+*/
+void search_student(vector<Student> v)
+{
+	int search_id;
+	cout << "\n\tENTER ID OF STUDENT: ";
+	cin >> search_id;
+
+	if (search_id > v.size() || search_id <= 0)
+		cout << "\n\tINVALID ID\n";
+	else
+	{
+		Student found;
+		for (auto i = 0; i < v.size(); ++i)
+		{
+			if (search_id == v[i].get_id())
+			{
+				found = v[i];
+				break;
+			} // end found if
+		} // end for
+
+		cout << "\n" << found << "\n";
+	} // end else
 }
 
 /**

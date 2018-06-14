@@ -33,6 +33,7 @@ ostream& operator<<(ostream& out, const Course& c)
 ostream& operator<<(ostream& out, const Student& s)
 {
 	ostringstream oss;
+	oss << std::fixed << setprecision(2);
 	oss << "STUDENT ID: " << s.id << endl;
 	oss << "STUDENT NAME: " << s.name << endl << endl;
 	for (Course c : s.classes)
